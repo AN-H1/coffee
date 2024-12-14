@@ -327,36 +327,6 @@ def scan_page():
 
 @app.route("/scan/<int:id>/<string:title>", methods=["GET", "POST"])
 def batch_scan_page(id, title):
-    if request.method == "POST":
-        last_scan = BatchSession.query.order_by(DefectsDetected.scan_number.desc()).first()
-
-        if last_scan:
-            last_scan_number = last_batch.batch_id
-        else:
-            last_scan_number = 0
-
-        # Now check the previous ID
-        scan_number = last_id + 1
-        defects_detected = request.form.get("defect")
-        defects_array = {}
-        
-        if "defects_count" in request.form:
-            defects_count = request.form.get("defects_count")
-            for index, defect in enumerate(defects_detected):
-                defects_array[defects_detected] = defects_count[index]               
-        
-        newScan = DefectsDetected(
-            scan_number=scan_number,
-            defectsDetected=defects_array,
-            batch_id = id
-        )
-        db.session.add(newScan)
-        db.session.commit()
-        
-        message="Data had been added"
-        return render_template("user/scan.html", message=message)
-    
-    
     batch_used = BatchSession.query.get(id)
     title_used = batch_used.title 
     farm_used = batch_used.farm
@@ -368,6 +338,42 @@ def batch_scan_page(id, title):
         "farm_used":farm_used,
         "bean_used":bean_used,
         }
+    
+    
+    if request.method == "POST":
+        # last_scan = BatchSession.query.order_by(BatchSession.scan_number.desc()).first()
+        last_scan = DefectsDetected.query.filter(DefectsDetected.batch_id == id).order_by(DefectsDetected.scan_number.desc()).first()
+        print("LAST SCAN:",last_scan)
+        
+        if last_scan:
+            last_scan_number = last_scan.scan_number
+        else:
+            last_scan_number = 0
+
+        # Now check the previous ID
+        scan_number = last_scan_number + 1
+        defects_detected = request.form.getlist("defect")
+        defects_array = {}
+        
+        if "defects_count" in request.form:
+            defects_count = request.form.getlist("defects_count")
+            defects_count = list(map(int, defects_count))
+            
+            for index, defect in enumerate(defects_detected):
+                defects_array[defect] = defects_count[index]
+        
+        newScan = DefectsDetected(
+            scan_number=scan_number,
+            defectsDetected=defects_array,
+            batch_id = id
+        )
+        db.session.add(newScan)
+        db.session.commit()
+        
+        message="Data had been added"
+        return render_template("user/scan2.html", message=message,objects=objects)
+    
+    
         
     return render_template("user/scan2.html", objects=objects)
 

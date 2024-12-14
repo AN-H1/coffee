@@ -59,6 +59,7 @@ class ObjectDetection:
 
     def start_detects(self,frame):
         # ==================== test image ====================
+        # remove frame parameter
         # yolo_path = r"C:\Users\user\OneDrive\Desktop\runs\coffeeebean\best4.pt"
         # model = YOLO(yolo_path)  # Load a pretrained model (e.g., yolov8n.pt, yolov8s.pt, etc.)
         # imagepath = r"C:\Users\user\OneDrive\Desktop\CoffeeBeanProject_captures\object2\467474020_1131571705068305_5639011367866307380_n.jpg"

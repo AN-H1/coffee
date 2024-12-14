@@ -153,6 +153,11 @@ table.custom-bordered td:first-child {
   height: auto;
 } 
 
+.result-list input{
+  all: unset; 
+  display: none;
+}
+
 /* medium */
 @media screen and (min-width: 768px) {
   .scan-img {
