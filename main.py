@@ -19,7 +19,7 @@ import tempfile
 import cv2
 import asyncio
 from flask import Flask, render_template, url_for
-import time
+from flask_migrate import Migrate
 
 
 # Path to the shared file for detected objects
@@ -57,7 +57,9 @@ class User(db.Model):
     edu = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     status = db.Column(db.Integer, default=0, nullable=False)
-    scanned_objects = db.Column(db.Text, nullable=True)  # New field
+    
+    # removed scanned objects column
+    # scanned_objects = db.Column(db.Text, nullable=True)  # New field
 
     def __repr__(self):
         return f'User("{self.id}", "{self.fname}", "{self.lname}", "{self.email}", "{self.edu}", "{self.username}", "{self.status}")'
@@ -72,7 +74,7 @@ class Admin(db.Model):
     def __repr__(self):
         return f'Admin("{self.username}", "{self.id}")'
     
-
+migrate = Migrate(app, db)
 
 
 def create_tables():
