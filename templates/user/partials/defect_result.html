@@ -1,14 +1,13 @@
-{% if defects %}
-{% for data in defects %}
+{% if defects %} {% for data in defects %}
 <li class="list-group-item d-flex justify-content-between align-items-center">
-  {{data}}
-  <span class="badge bg-dark text-white rounded-pill"
-    >{{ defects[data]}}</span
-  >
+  <input type="text" name="defect" value="{{data}}" />
+  <span class="badge bg-dark text-white rounded-pill">
+    <input type="text" name="defects_count" value="{{ defects[data]}}"
+  /></span>
 </li>
-{% endfor %} 
-{% else %}
+{% endfor %} {% else %}
 <li class="list-group-item d-flex justify-content-between align-items-center">
+  <input type="text" name="defect" value="No Defects Detected!" class="d-none"/>
   <span class="text-danger">No defects Detected!</span>
 </li>
 {% endif %}

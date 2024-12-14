@@ -121,6 +121,23 @@ table.custom-bordered td:first-child {
   font-size: 1.4rem;
 }
 
+.session-batches-container{
+  border-radius: 15px;
+  border: 2px var(--main-green-theme) solid;
+}
+
+.session-batches-container:hover{
+  background-color: var(--main-green-theme);
+  color: white;
+}
+
+.session-batches {
+  text-decoration: none;
+  color: black;
+}
+
+
+
 
 /* small */
 @media screen and (min-width: 576px) {

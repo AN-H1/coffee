@@ -11,16 +11,18 @@
     src="{{ url_for('static', filename='images/styles/default_img.png') }}"
     class="border border-5 rounded-circle position-relative"
     alt="..."
-    style="height: 100px"
-  />
+    style="height: 100px" />
   <h3>User's name</h3>
 </div>
 <div
   class="my-3"
-  style="width: 100%; height: 3px; background-color: black; border-radius: 20px"
-></div>
-{% endblock head_content %} 
-{% block content %}
+  style="
+    width: 100%;
+    height: 3px;
+    background-color: black;
+    border-radius: 20px;
+  "></div>
+{% endblock head_content %} {% block content %}
 
 <div class="d-flex justify-content-between mb-2">
   <button class="btn btn-success">Filter</button>
@@ -38,14 +40,122 @@
     <button class="btn btn-danger">Logout</button>
   </a>
   <a href="/scan">
-    <button class="btn btn-success">Add Session +</button>
+    <button class="btn btn-success">Add New Session +</button>
   </a>
 </div>
+<br />
+<div class="container-fluid m-0 p-0">
+  <div>
+    <div class="mb-3 session-batches-container">
+      <div class="row session-batches p-3 fw-bold fs-5">
+        <div class="col">Title</div>
+        <div class="col">Date</div>
+        <div class="col">Time</div>
+        <div class="col">Bean type</div>
+        <div class="col">Farm</div>
+      </div>
+    </div>
+  </div>
 
-<div class="container-fluid overflow-auto m-0 p-0">
+  <div class="mb-4">
+    <div class="mb-3 session-batches-container">
+      <div
+        class="row session-batches p-3"
+        data-bs-toggle="collapse"
+        href="#collapseExample1"
+        role="button"
+        aria-expanded="false"
+        aria-controls="collapseExample1">
+        <div class="col">Session Batch Title</div>
+        <div class="col">12-12-24</div>
+        <div class="col">23:30 pm</div>
+        <div class="col">Robusta</div>
+        <div class="col">DLSU FARM</div>
+      </div>
+    </div>
+
+    <div class="collapse" id="collapseExample1">
+      <div class="card card-body rounded-4">
+        <div class="text-center">
+          <a href="#">
+            <div>View Scans</div>
+          </a>
+          <br />
+          <a href="#">
+            <div>Add Scans</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <div class="mb-3 session-batches-container">
+      <div
+        class="row session-batches p-3"
+        data-bs-toggle="collapse"
+        href="#collapseExample2"
+        role="button"
+        aria-expanded="false"
+        aria-controls="collapseExample2">
+        <div class="col">Session Batch Title</div>
+        <div class="col">12-12-24</div>
+        <div class="col">23:30 pm</div>
+        <div class="col">Robusta</div>
+        <div class="col">DLSU FARM</div>
+      </div>
+    </div>
+
+    <div class="collapse" id="collapseExample2">
+      <div class="card card-body rounded-4">
+        <div class="text-center">
+          <a href="#">
+            <div>View Scans</div>
+          </a>
+          <br />
+          <a href="#">
+            <div>Add Scans</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <div class="mb-3 session-batches-container">
+      <div
+        class="row session-batches p-3"
+        data-bs-toggle="collapse"
+        href="#collapseExample3"
+        role="button"
+        aria-expanded="false"
+        aria-controls="collapseExample3">
+        <div class="col">Session Batch Title</div>
+        <div class="col">12-12-24</div>
+        <div class="col">23:30 pm</div>
+        <div class="col">Robusta</div>
+        <div class="col">DLSU FARM</div>
+      </div>
+    </div>
+
+    <div class="collapse" id="collapseExample3">
+      <div class="card card-body rounded-4">
+        <div class="text-center">
+          <a href="#">
+            <div>View Scans</div>
+          </a>
+          <br />
+          <a href="#">
+            <div>Add Scans</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {#
   <table
-    class="table flex-wrap text-wrap custom-bordered table-data text-center"
-  >
+    class="table flex-wrap text-wrap custom-bordered table-data text-center">
     <thead>
       <tr>
         <th scope="col"></th>
@@ -84,5 +194,11 @@
       </tr>
     </tbody>
   </table>
+  #}
 </div>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous"></script>
+
 {% endblock content %}

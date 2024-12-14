@@ -20,6 +20,11 @@ import cv2
 import asyncio
 from flask import Flask, render_template, url_for
 from flask_migrate import Migrate
+from datetime import datetime
+
+from flask import Flask, render_template, redirect, url_for
+
+
 
 
 # Path to the shared file for detected objects
@@ -73,6 +78,32 @@ class Admin(db.Model):
 
     def __repr__(self):
         return f'Admin("{self.username}", "{self.id}")'
+    
+# Session Class
+class BatchSession(db.Model):
+    batch_id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    bean_type = db.Column(db.String(255), nullable=False)
+    farm = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f'BatchSession("{self.id}", "{self.title}")'
+    
+# Defects Class
+class DefectsDetected(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    scan_number = db.Column(db.Integer, nullable=False)
+    date_scanned = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    defectsDetected = db.Column(db.JSON, nullable=False)
+    batch_id = db.Column(db.Integer, db.ForeignKey('batch_session.batch_id'), nullable=False)  # Foreign key
+
+    # Define relationship to BatchSession
+    batch = db.relationship('BatchSession', backref='defects_detected', lazy=True)
+
+
+    def __repr__(self):
+        return f'DefectsDetected("{self.id}", "{self.batch_id}")'
     
 migrate = Migrate(app, db)
 
@@ -278,8 +309,67 @@ def userSignup():
 @app.route("/scan", methods=["GET", "POST"])
 def scan_page():
     if request.method == "POST":
-        print("JANSEL PINGUEL")
-    return render_template("user/scan.html", title="Object Scanning")
+        session_name = request.form.get("input_session_name")
+        farm = request.form.get("input_farm")
+        bean_type = request.form.get("input_bean_type")
+       
+        newBatchSession = BatchSession(title=session_name, farm=farm, bean_type=bean_type)
+        db.session.add(newBatchSession)
+        db.session.commit()
+        
+        AddednewBatchSession = BatchSession.query.order_by(BatchSession.batch_id.desc()).first()
+        newId = AddednewBatchSession.batch_id
+        newTitle = AddednewBatchSession.title
+        
+        return redirect(url_for("batch_scan_page", id=newId, title=newTitle))
+   
+    return render_template("user/scan.html")
+
+@app.route("/scan/<int:id>/<string:title>", methods=["GET", "POST"])
+def batch_scan_page(id, title):
+    if request.method == "POST":
+        last_scan = BatchSession.query.order_by(DefectsDetected.scan_number.desc()).first()
+
+        if last_scan:
+            last_scan_number = last_batch.batch_id
+        else:
+            last_scan_number = 0
+
+        # Now check the previous ID
+        scan_number = last_id + 1
+        defects_detected = request.form.get("defect")
+        defects_array = {}
+        
+        if "defects_count" in request.form:
+            defects_count = request.form.get("defects_count")
+            for index, defect in enumerate(defects_detected):
+                defects_array[defects_detected] = defects_count[index]               
+        
+        newScan = DefectsDetected(
+            scan_number=scan_number,
+            defectsDetected=defects_array,
+            batch_id = id
+        )
+        db.session.add(newScan)
+        db.session.commit()
+        
+        message="Data had been added"
+        return render_template("user/scan.html", message=message)
+    
+    
+    batch_used = BatchSession.query.get(id)
+    title_used = batch_used.title 
+    farm_used = batch_used.farm
+    bean_used = batch_used.bean_type
+    
+    objects = {
+        "title_used":title_used,
+        "batch_used":batch_used,
+        "farm_used":farm_used,
+        "bean_used":bean_used,
+        }
+        
+    return render_template("user/scan2.html", objects=objects)
 
 
 # ---------------- Object Detection Integration -----------------
@@ -436,7 +526,6 @@ def update_scanned_objects():
 # User dashboard
 @app.route("/user/dashboard")
 def userDashboard():
-    print("CAMERA OBJ:", camera_obj)
     if not session.get("user_id"):
         return redirect("/user/")
     id = session.get("user_id")
