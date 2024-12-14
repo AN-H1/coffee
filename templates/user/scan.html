@@ -29,33 +29,35 @@
     </div>
   </div>
   <div class="col result-container d-flex flex-row overflow-auto">
-    <div
-      class="container py-4 px-2 d-flex flex-column justify-content-start position-relative">
+    <div class="container py-4 px-2 d-flex flex-column justify-content-start position-relative d-none">
       <form
         method="POST"
         class="pt-2 d-flex flex-column align-items-center form-scan overflow-auto"
         style="height: 100%">
+        <h1 class="result-title fw-bold">Session Batch</h1>
+        <h2 class="result-title fw-normal fs-6">12-12-24 | 8:32pm</h2>
+        <br />
+        <h2 class="result-title fw-bold fs-4">Scan #: 1</h2>
         <h1 class="result-title">Results / Outcomes</h1>
+
         <div>
-          <label for="exampleFormControlInput1" class="form-label">Farm:</label>
+          <label for="" class="form-label">Farm:</label>
           <input
             type="text"
             class="form-control fw-bold"
-            id="exampleFormControlInput1"
             placeholder="name@example.com"
-            value="Nicolas Farm" />
+            value="DLSUD Farm" />
         </div>
 
         <br />
 
         <div>
-          <label for="exampleFormControlInput1" class="form-label"
+          <label for="" class="form-label"
             >Bean type:</label
           >
           <input
             type="text"
             class="form-control fw-bold"
-            id="exampleFormControlInput1"
             placeholder="name@example.com"
             value="Robusta" />
         </div>
@@ -63,7 +65,7 @@
         <br />
 
         <div>
-          <label for="exampleFormControlInput1" class="form-label"
+          <label for="" class="form-label"
             >Defects:</label
           >
           <div class="">
@@ -110,8 +112,48 @@
         <input
           type="submit"
           id="submitResultsBtn"
-          class="btn btn-secondary rounded-pill d-none my-3 my-2 p-3 py-2 px-5" />
+          class="btn btn-secondary rounded-pill d-none my-3 my-2 p-3 py-2 px-5"
+          value="Submit Scan" />
       </form>
+    </div>
+
+    <div class="container py-4 px-2 d-flex flex-column justify-content-center ">
+      <div class="container-sm">
+        <img
+          src="static/images/styles/coffeebeanScan-removebg-preview.png"
+          alt=""
+          class="img-fluid scan-img" />
+      </div>
+      <div class="d-flex flex-column align-items-center form-scan">
+        <div>
+          <label for="" class="form-label">Session Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Session Batch 12-12-24 | 23:32 pm" />
+        </div>
+        <br />
+        <div>
+          <label for="" class="form-label">Farm:</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="name@example.com" />
+        </div>
+        <br />
+        <div class="">
+          <label for="" class="form-label"
+            >Bean type:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            placeholder="name@example.com" />
+        </div>
+        <button class="my-3 my-2 p-3 py-2 px-5 btn btn-light rounded-pill">
+          Start
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -157,13 +199,11 @@
           }
         });*/
 
-
       scannedImage.attr("src", `{{url_for("video_feed")}}`);
       scannedImage.on("load", function () {
         scannedImage.removeClass("d-none");
         spinnerLoading.addClass("d-none");
-      }); 
-
+      });
     } catch (e) {
       alert(e);
     }
