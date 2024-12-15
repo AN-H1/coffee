@@ -93,7 +93,6 @@ class BatchSession(db.Model):
 
     user = db.relationship('User', backref='batch_sessions', lazy=True)
 
-
     def __repr__(self):
         return f'BatchSession("{self.batch_id}", "{self.title}")'
     
@@ -358,27 +357,29 @@ def batch_scan_page(id, title):
     title_used = batch_used.title 
     farm_used = batch_used.farm
     bean_used = batch_used.bean_type
+    last_scan = DefectsDetected.query.filter(DefectsDetected.batch_id == id).order_by(DefectsDetected.scan_number.desc()).first()
+    print("LAST SCAN:",last_scan)
+    
+    if last_scan:
+        last_scan_number = last_scan.scan_number
+    else:
+        last_scan_number = 0
+    
+    scan_number = last_scan_number + 1
     
     objects = {
         "title_used":title_used,
         "batch_used":batch_used,
         "farm_used":farm_used,
         "bean_used":bean_used,
+        "last_scan":scan_number,
         }
     
     
     if request.method == "POST":
         # last_scan = BatchSession.query.order_by(BatchSession.scan_number.desc()).first()
-        last_scan = DefectsDetected.query.filter(DefectsDetected.batch_id == id).order_by(DefectsDetected.scan_number.desc()).first()
-        print("LAST SCAN:",last_scan)
-        
-        if last_scan:
-            last_scan_number = last_scan.scan_number
-        else:
-            last_scan_number = 0
 
         # Now check the previous ID
-        scan_number = last_scan_number + 1
         defects_detected = request.form.getlist("defect")
         defects_array = {}
         
@@ -392,8 +393,7 @@ def batch_scan_page(id, title):
         newScan = DefectsDetected(
             scan_number=scan_number,
             defectsDetected=defects_array,
-            batch_id = id,
-            id=session.id
+            batch_id = id
         )
         db.session.add(newScan)
         db.session.commit()
@@ -568,6 +568,28 @@ def userDashboard():
     user_batch_sessions = BatchSession.query.filter(BatchSession.user_id==user_id).all()
     
     return render_template("user/dashboard.html", objects=user_batch_sessions)
+
+
+@app.route("/user/dashboard/view/<int:id>/<string:title>")
+def view_scans(id, title):
+    
+    batch = BatchSession.query.get(id)
+    scan_lists = batch.defects_detected    
+    return render_template("user/partials/view_scans.html", scan_lists=scan_lists, batch=batch)
+
+@app.route("/delete-batch/<int:batch_id>")
+def delete_batch(batch_id):
+    batch_selected = BatchSession.query.get(batch_id)
+    b = batch_selected.defects_detected
+    for data in b:       
+        db.session.delete(data)
+
+    db.session.delete(batch_selected)
+    
+    db.session.commit()
+    return redirect(url_for('userDashboard'))
+      
+      
 
 
 # User logout
