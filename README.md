@@ -1,1 +1,1 @@
-# coffee
+pip install -r requirements.txt
