@@ -10,7 +10,7 @@ import json
 import threading
 from ultralytics import YOLO
 
-path = r"C:\Users\user\OneDrive\Desktop\runs\coffeeebean\best4.pt"
+path = r"object2/best4.pt"
 model = YOLO(path)  # Load a pretrained model (e.g., yolov8n.pt, yolov8s.pt, etc.)
 screenshot_dir = "./static/images/"
 os.makedirs(screenshot_dir, exist_ok=True)  # Ensure the directory exists
@@ -62,7 +62,7 @@ class ObjectDetection:
         # remove frame parameter
         # yolo_path = r"C:\Users\user\OneDrive\Desktop\runs\coffeeebean\best4.pt"
         # model = YOLO(yolo_path)  # Load a pretrained model (e.g., yolov8n.pt, yolov8s.pt, etc.)
-        # imagepath = r"C:\Users\user\OneDrive\Desktop\CoffeeBeanProject_captures\object2\467474020_1131571705068305_5639011367866307380_n.jpg"
+        # imagepath = r"object2\467474020_1131571705068305_5639011367866307380_n.jpg"
         # frame = cv2.imread(imagepath, cv2.IMREAD_COLOR)
         # ==================== test image end ====================
         
