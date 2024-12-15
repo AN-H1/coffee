@@ -78,6 +78,9 @@ class Admin(db.Model):
 
     def __repr__(self):
         return f'Admin("{self.username}", "{self.id}")'
+
+# from sqlalchemy import ForeignKeyConstraint
+
     
 # Session Class
 class BatchSession(db.Model):
@@ -86,9 +89,13 @@ class BatchSession(db.Model):
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     bean_type = db.Column(db.String(255), nullable=False)
     farm = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key referencing user.id
+
+    user = db.relationship('User', backref='batch_sessions', lazy=True)
+
 
     def __repr__(self):
-        return f'BatchSession("{self.id}", "{self.title}")'
+        return f'BatchSession("{self.batch_id}", "{self.title}")'
     
 # Defects Class
 class DefectsDetected(db.Model):
@@ -123,6 +130,23 @@ def create_tables():
 
 # Call create_tables to create the database tables
 # create_tables()
+
+# def drop_table():
+#     with app.app_context():
+#         # Drop the BatchSession table
+#         BatchSession.__table__.drop(db.engine)
+#         print("Table 'batch_session' has been dropped.")
+
+# drop_table()
+
+# =====truncate table=====
+# def clear_table(model):
+#     with app.app_context():
+#         db.session.query(model).delete()
+#         db.session.commit()
+        
+# clear_table(BatchSession)  # Replace with your model class
+# =====truncate table end=====
 
 
 # Main index
@@ -312,8 +336,11 @@ def scan_page():
         session_name = request.form.get("input_session_name")
         farm = request.form.get("input_farm")
         bean_type = request.form.get("input_bean_type")
+        user_Id = session.get("user_id")
+        user_Id = User.query.get(user_Id)
+        # user = User.query.filter(User.id == 2).first()
        
-        newBatchSession = BatchSession(title=session_name, farm=farm, bean_type=bean_type)
+        newBatchSession = BatchSession(title=session_name, farm=farm, bean_type=bean_type, user_id=user_Id.id)
         db.session.add(newBatchSession)
         db.session.commit()
         
@@ -365,7 +392,8 @@ def batch_scan_page(id, title):
         newScan = DefectsDetected(
             scan_number=scan_number,
             defectsDetected=defects_array,
-            batch_id = id
+            batch_id = id,
+            id=session.id
         )
         db.session.add(newScan)
         db.session.commit()
@@ -534,9 +562,13 @@ def update_scanned_objects():
 def userDashboard():
     if not session.get("user_id"):
         return redirect("/user/")
-    id = session.get("user_id")
-    users = User.query.filter_by(id=id).first()
-    return render_template("user/dashboard.html", title="User Dashboard", users=users)
+    
+    user_id = session.get("user_id")
+
+    user_batch_sessions = BatchSession.query.filter(BatchSession.user_id==user_id).all()
+    
+    return render_template("user/dashboard.html", objects=user_batch_sessions)
+
 
 # User logout
 @app.route("/user/logout")
